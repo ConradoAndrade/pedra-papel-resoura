@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt">
+	<head>
+		<meta charset="utf-8">
+		<title>Pedra, Papel e Tesoura</title>
+		<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet"> 
+		<script>
+			window.onload = function(){
+
+				var bts = document.getElementsByClassName("cts");
+
+				var mensage = document.getElementsByClassName("mensage")[0];
+
+				var playsMsg = document.getElementsByClassName("plays")[0];
+
+				var modal = document.getElementById("modal");
+				var overMsn = document.getElementsByClassName("overMsn")[0];
+				var restart = document.getElementsByClassName("btAgain")[0];
+
+				var USRPickIMG = document.getElementById("USRPickIMG");
+				var UserPick;
+
+				var cpuValues = ["pedra","papel","tesoura"];
+				var CPUPickIMG = document.getElementById("CPUPickIMG");
+				var CPUPick;
+				var randVal;
+
+				var MsgWin = "GANHOU!";
+				var MsgLost = "PERDEU!";
+				var MsgDraw = "EMPATE!";
+
+				var faces = ["mw.png","ml.png","md.png"];
+				var faceResult = document.getElementById("faceResult");
+
+				var UsrPoints = 0;
+				var CpuPoints = 0;
+				var countUsrPoints = document.getElementsByClassName("countUsrPoints")[0];
+				var countCpuPoints = document.getElementsByClassName("countCpuPoints")[0];
+
+				var plays = 0;
+				var maxPlays = 3;
+				playsMsg.innerHTML = maxPlays;
+
+				//Criar click function
+				for (var i = bts.length - 1; i >= 0; i--) {
+
+					var btSelected = bts[i];
+					
+					btSelected.onclick = function(){
+
+						if (this.id  ==  "pedra") {
+							process(this.id);
+						}
+
+						if (this.id  ==  "papel") {
+							process(this.id);
+						}
+
+						if (this.id  ==  "tesoura") {
+							process(this.id);
+						}
+					}
+
+				}
+
+				//Sistema de Pontos
+				function PointsHandler(val) {
+
+					if (val == "W") {
+						UsrPoints = ++UsrPoints;
+						countUsrPoints.innerHTML = UsrPoints;
+
+						mensage.innerHTML = MsgWin;
+						mensage.style.color = "green";
+						mensage.classList.add("msn");
+					}
+					if (val == "L") {
+						CpuPoints = ++CpuPoints;
+						countCpuPoints.innerHTML = CpuPoints;
+
+						mensage.innerHTML = MsgLost;
+						mensage.style.color = "red";
+						mensage.classList.add("msn");
+					}
+					if (val == "D") {
+						mensage.innerHTML = MsgDraw;
+						mensage.style.color = "yellow";
+						mensage.classList.add("msn");
+					}
+
+					 window.setTimeout(afterall, 600); //<---------------------------------------------
+					
+				}
+
+				//remove efeito das mensagens
+				function afterall(){
+					mensage.classList.remove("msn");
+				}
+
+				//processador de jogadas
+				function process(value){
+					plays = --maxPlays;
+					playsMsg.innerHTML = plays;
+
+					UserPick = value;
+
+					randVal = Math.floor(Math.random() * 3);
+
+					CPUPick = cpuValues[randVal];
+
+					CPUPickIMG.src = CPUPick + ".png";
+					USRPickIMG.src = UserPick + ".png";
+
+					//empate
+					if (UserPick == CPUPick) {
+						PointsHandler("D");
+					}
+
+					//CPU PEDRA
+					if (UserPick == "papel" && CPUPick == "pedra") {
+						PointsHandler("W");
+					}
+					if (UserPick == "tesoura" && CPUPick == "pedra") {
+						PointsHandler("L");
+					}
+
+					//CPU PAPEL
+					if (UserPick == "pedra" && CPUPick == "papel") {
+						PointsHandler("L");
+					}
+					if (UserPick == "tesoura" && CPUPick == "papel") {
+						PointsHandler("W");
+					}
+
+					//CPU TESOURA
+					if (UserPick == "pedra" && CPUPick == "tesoura") {
+						PointsHandler("W");
+					}
+					if (UserPick == "papel" && CPUPick == "tesoura") {
+						PointsHandler("L");
+					}
+
+					chekResult();
+
+				}
+
+				//Controlador de resultados
+				function chekResult() {
+
+					if (plays == 0) {
+
+						modal.style.display = 'block';
+						modal.classList.add("modalEnter");
+						
+						if (UsrPoints > CpuPoints) {
+
+							overMsn.innerHTML = MsgWin;
+							overMsn.style.color = "green";
+							faceResult.src = faces[0];
+
+						}else if (UsrPoints < CpuPoints) {
+
+							overMsn.innerHTML = MsgLost;
+							overMsn.style.color = "red";
+							faceResult.src = faces[1];
+
+						}else{
+
+							overMsn.innerHTML = MsgDraw;
+							overMsn.style.color = "yellow";
+							faceResult.src = faces[2];
+
+						}
+
+					}
+
+				}
+
+				//Regarregar pagina
+				restart.onclick = function() {
+					location.reload(); //<---------------------------------------------
+				}
+				
+			}
+		</script>
+		<style>
+			
+			body{
+				margin: 0;
+				padding: 0;
+				font-family: 'Press Start 2P', cursive;
+				overflow: hidden;
+			}
+
+			#wrapper{
+				display: grid;
+				grid-template-columns: 1fr 1fr ;
+				grid-template-rows: 1fr 1fr 4fr 1fr 1fr;
+				justify-items: center;
+				align-items: center;
+				
+			}
+
+			.plays{
+				grid-column-start: 1;
+				grid-column-end: 3;
+				
+				text-align: center;	
+				font-size: 1.6rem;
+				text-decoration: underline;
+			}
+
+			.top{
+				grid-column-start: 1;
+				grid-column-end: 3;
+				
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				grid-gap: 30px;
+
+				margin-top: 10px;
+				font-size: 3.5rem;
+			}
+
+			.top div{
+				width: 215px;
+				text-align: center;
+			}
+
+			.left{
+				text-align: right;
+			}
+
+			.right{
+				text-align: left;
+			}
+
+			.controls{
+				grid-column-start: 1;
+				grid-column-end: 3;
+
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+			}
+
+			.cts{
+			    width: 80px;
+			    cursor: pointer;
+			    transform: rotate(90deg);
+			    text-align: center;
+			}
+
+			.cts img{
+				width: 60px;
+			}
+
+			#CPUPickIMG{
+				transform: rotateY(180deg) translate3d( 0, 0, 0);
+				width: 50%;
+			}
+
+			#USRPickIMG {
+				width: 50%;
+			}
+
+			.mensage{
+				position: absolute;
+				top: -100px;
+				font-size: 2rem;
+				text-shadow: 1px 2px 15px;
+			}
+
+			.msn{
+				animation: msn 1.5s forwards;
+			}
+
+			#modal{
+				display: flex;
+			    flex-direction: column;
+			    justify-content: center;
+
+				width: 100vw;
+				height: 100vh;
+				position: absolute;
+				z-index: 1;
+				display: none;
+				background-color: rgba(0,0,0,0.7);
+			}
+
+			.modalContent{
+				width: 600px;
+				height: 350px;
+				margin: auto;
+				position: relative;
+			    background-color: #fff;
+			    text-align: center;
+			    animation: modalEnter 0.8s forwards;
+			    border-radius: 15px;
+			}
+
+			#faceResult{
+				width: 40%;
+			}
+
+			.overMsn {
+			    padding-top: 30px;
+			    font-size: 2.5rem;
+			}
+
+			.btAgain{
+				cursor: pointer;
+				text-decoration: underline;
+			}
+
+			@keyframes modalEnter{
+				0%{
+					top: -400px;
+					opacity: 0;
+				}
+
+
+				100%{
+					top: 150px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes msn{
+				0%{
+					top: 170px;
+					opacity: 1;
+				}
+
+
+				100%{
+					top: -100px;
+					opacity: 0;
+				}
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<div id="game">
+
+			<div id="modal">
+				<div class="modalContent">
+					<div class="overMsn">asdsd</div>
+					<div><img id="faceResult" src="" alt=""></div>
+					<div class="btAgain">JOGAR NOVAMENTE</div>
+				</div>
+			</div>
+
+			<div id="wrapper">
+
+				<div class="mensage"></div>
+
+				<div class="plays"></div>
+
+				<div class="top">
+					<div class="countCpuPoints">0</div> <div>-</div> <div class="countUsrPoints">0</div>
+				</div>
+
+				<div class="left">
+					<img id="CPUPickIMG" src="" alt="">
+				</div>
+
+				<div class="right">
+					<img id="USRPickIMG" src="" alt="">
+				</div>
+
+				<div class="controls">
+					<div id="pedra" class="cts"> <img src="pedra.png" alt="Pedra"></div>
+					<div id="papel" class="cts"><img src="papel.png" alt="Pedra"></div>
+					<div id="tesoura" class="cts"><img src="tesoura.png" alt="Pedra"></div>
+				</div>
+
+			</div>
+		</div>
+
+	</body>
+</html>
